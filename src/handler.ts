@@ -44,3 +44,29 @@ export async function requestAPI<T>(
 
   return data;
 }
+
+export async function getChatbotResponse(currentCellJSON: any, userInput: string): Promise<{ success: boolean, response?: string, error?: string }> {
+  const settings = ServerConnection.makeSettings();
+  const requestUrl = URLExt.join(settings.baseUrl, 'jupyterlab-ai-tutor', 'get-example');
+
+  const init: RequestInit = {
+    method: 'POST',
+    body: JSON.stringify({ currentCellJSON, userInput }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  try {
+    let response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    let data: any = await response.json();
+    return data;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new ServerConnection.NetworkError(error);  // Now correctly typed as Error
+    } else {
+      // Handle or rethrow the error if it's not an instance of Error
+      throw new ServerConnection.NetworkError(new Error('Unknown error occurred'));
+    }
+  }
+}

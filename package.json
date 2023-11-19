@@ -56,11 +56,11 @@
     },
     "dependencies": {
         "@jupyterlab/application": "^4.0.0",
-        "@jupyterlab/settingregistry": "^4.0.0",
         "@jupyterlab/apputils": "^4.0.0",
-        "@jupyterlab/ui-components": "4.0.8",
         "@jupyterlab/launcher": "4.0.8",
-        "@jupyterlab/notebook": "^4.0.0"
+        "@jupyterlab/notebook": "^4.0.0",
+        "@jupyterlab/settingregistry": "^4.0.0",
+        "@jupyterlab/ui-components": "4.0.8"
     },
     "devDependencies": {
         "@jupyterlab/builder": "^4.0.0",
@@ -97,14 +97,14 @@
     },
     "jupyterlab": {
         "discovery": {
-        "server": {
-            "managers": [
-                "pip"
-            ],
-            "base": {
-                "name": "jupyterlab_ai_tutor"
+            "server": {
+                "managers": [
+                    "pip"
+                ],
+                "base": {
+                    "name": "jupyterlab_ai_tutor"
+                }
             }
-        }
         },
         "extension": true,
         "outputDir": "jupyterlab_ai_tutor/labextension",

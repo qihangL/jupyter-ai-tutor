@@ -1,44 +1,68 @@
+// src/index.ts
+
 import {
   JupyterFrontEnd,
-  JupyterFrontEndPlugin
+  JupyterFrontEndPlugin,
+  ILayoutRestorer
 } from '@jupyterlab/application';
+import { NotebookPanel, INotebookTracker } from '@jupyterlab/notebook';
+import { MainAreaWidget, ICommandPalette, ToolbarButton } from '@jupyterlab/apputils';
+import { ILauncher } from '@jupyterlab/launcher';
+import { reactIcon } from '@jupyterlab/ui-components';
+import { ChatbotWidget } from './ChatbotComponent';
 
-import { ISettingRegistry } from '@jupyterlab/settingregistry';
+namespace CommandIDs {
+  export const openChatbot = 'open-chatbot-widget';
+}
 
-import { requestAPI } from './handler';
+let chatbotWidget: MainAreaWidget<ChatbotWidget> | null = null;  // Global reference for the chatbot widget
 
-/**
- * Initialization data for the jupyterlab-ai-tutor extension.
- */
-const plugin: JupyterFrontEndPlugin<void> = {
-  id: 'jupyterlab-ai-tutor:plugin',
-  description: 'A JupyterLab extension.',
+const extension: JupyterFrontEndPlugin<void> = {
+  id: 'react-widget',
+  description: 'A JupyterLab extension with a chatbot widget.',
   autoStart: true,
-  optional: [ISettingRegistry],
-  activate: (app: JupyterFrontEnd, settingRegistry: ISettingRegistry | null) => {
-    console.log('JupyterLab extension jupyterlab-ai-tutor is activated!');
+  requires: [ICommandPalette, INotebookTracker, ILayoutRestorer],
+  optional: [ILauncher],
+  activate: (app: JupyterFrontEnd, palette: ICommandPalette, notebooks: INotebookTracker, restorer: ILayoutRestorer) => {
+    const command = CommandIDs.openChatbot;
+    app.commands.addCommand(command, {
+      label: 'Open Chatbot',
+      execute: () => {
+        if (!chatbotWidget || !chatbotWidget.isAttached) {
+          const content = new ChatbotWidget(notebooks);
+          chatbotWidget = new MainAreaWidget<ChatbotWidget>({ content });
+          chatbotWidget.title.label = 'Chatbot';
+          chatbotWidget.title.icon = reactIcon;
+        }
+    
+        if (!chatbotWidget.isAttached) {
+          const currentWidget = app.shell.currentWidget;
+          if (currentWidget) {
+            app.shell.add(chatbotWidget, 'main', { mode: 'split-right', ref: currentWidget.id });
+          } else {
+            app.shell.add(chatbotWidget, 'main');
+          }
+        } else {
+          app.shell.activateById(chatbotWidget.id);  // Focus the existing widget
+        }
+      }
+    });
+    
 
-    if (settingRegistry) {
-      settingRegistry
-        .load(plugin.id)
-        .then(settings => {
-          console.log('jupyterlab-ai-tutor settings loaded:', settings.composite);
-        })
-        .catch(reason => {
-          console.error('Failed to load settings for jupyterlab-ai-tutor.', reason);
-        });
-    }
+    // Add the command to the palette
+    palette.addItem({ command, category: 'Chatbot' });
 
-    requestAPI<any>('get-example')
-      .then(data => {
-        console.log(data);
-      })
-      .catch(reason => {
-        console.error(
-          `The jupyterlab_ai_tutor server extension appears to be missing.\n${reason}`
-        );
+    // Add a button to the notebook toolbar
+    notebooks.widgetAdded.connect((sender, panel: NotebookPanel) => {
+      const button = new ToolbarButton({
+        label: 'Chatbot',
+        onClick: () => app.commands.execute(command),
+        tooltip: 'Open the Chatbot'
       });
+
+      panel.toolbar.insertItem(10, 'chatbot', button);
+    });
   }
 };
 
-export default plugin;
+export default extension;
