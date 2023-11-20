@@ -121,5 +121,6 @@ dmypy.json
 .yarn/
 
 # jupyter notebook
-.ipynb_checkpoints
-.ipynb
+*.ipynb_checkpoints
+*.ipynb
+nohup.out

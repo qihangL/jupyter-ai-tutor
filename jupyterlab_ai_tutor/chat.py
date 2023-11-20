@@ -1,15 +1,16 @@
 import os
-from langchain.chat_models import ChatOpenAI
+from langchain.chat_models import AzureChatOpenAI
 from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
 
-api_key = os.environ.get('OPENAI_API_KEY', None)
-if not api_key:
-    raise EnvironmentError("OPENAI_API_KEY not found in environment variables")
+os.environ["AZURE_OPENAI_API_KEY"] = "9a42e864a1454071a0f1d76ab50b6c43"
+os.environ.pop("OPENAI_API_BASE", None)
 
-base_url = "https://api.nextweb.fun/openai/v1"
-
-# Initialize the ChatOpenAI model
-chat = ChatOpenAI(model='gpt-4', temperature=0, api_key=api_key, base_url=base_url)
+chat = AzureChatOpenAI(
+    temperature=0,
+    deployment_name="decorator",
+    azure_endpoint="https://cs-1302-ccha23.openai.azure.com/",
+    openai_api_version="2023-05-15",
+)
 
 # Define prompt templates
 template = (
