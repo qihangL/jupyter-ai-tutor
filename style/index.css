@@ -1,1 +1,86 @@
 @import url('base.css');
+
+.chatbot-container {
+  /* Adjust width to be responsive */
+  max-width: 90%; /* Allows the container to scale */
+  width: auto; /* Ensures container width adjusts based on content and viewport */
+  margin: auto;
+  padding: 20px;
+  border-radius: 8px;
+  background: #fff;
+
+  /* Responsive design: Adjust for smaller screens */
+  @media (max-width: 600px) {
+    max-width: 100%; /* Chatbot takes full width on smaller screens */
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+}
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatbot-input {
+  flex-grow: 1;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 16px;
+  /* Prevent the input from being too narrow on small screens */
+  min-width: 0; 
+}
+
+.chatbot-submit {
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  /* Prevent the button from disappearing on narrow screens */
+  white-space: nowrap;
+  flex-shrink: 0; 
+}
+
+.chatbot-submit:disabled {
+  background-color: #cccccc;
+}
+  
+.chatbot-response {
+  margin-top: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Choose a readable font */
+  font-size: 1rem; /* Adjust the font size */
+  line-height: 1.5; /* Increase line height for better readability */
+  color: #333; /* Ensure good contrast for readability */
+  background-color: #f9f9f9; /* Optional: a light background can sometimes enhance readability */
+  border-radius: 4px; /* Optional: add rounded corners for aesthetic purposes */
+  padding: 10px; /* Add padding for white space */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: a subtle shadow can help the text "pop" */
+  display: none; 
+}
+
+.chatbot-response.hidden {
+  display: none; /* Explicitly hide when there's no response */
+}
+
+.chatbot-response:not(.hidden) {
+  display: block; /* Show the response box when there is content */
+  /* Other styling that should only apply when the box is visible */
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 480px) {
+  .chatbot-submit {
+    padding: 10px 15px; /* Slightly reduce padding on smaller screens */
+  }
+
+  .chatbot-input {
+    padding: 10px 10px; /* Slightly reduce padding on smaller screens */
+  }
+}

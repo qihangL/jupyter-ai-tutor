@@ -17,7 +17,7 @@ template = (
     "You are an expert in the field of teaching Python to beginners. Your task is to answer user's questions about Python. The user is using JupyterLab. The infomation of the current cell is {cell}. Your task is to answer the user's question about it. Do not give detailed explanations, just answer the question, unless the user asks for more details."
 )
 system_message_prompt = SystemMessagePromptTemplate.from_template(template)
-human_template = "Explain the code and output of the cell, if any. Focus on the question: {question}"
+human_template = "My question is {question}."
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
 
 chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
