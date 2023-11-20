@@ -30,6 +30,7 @@ const extension: JupyterFrontEndPlugin<void> = {
       execute: () => {
         if (!chatbotWidget || !chatbotWidget.isAttached) {
           const content = new ChatbotWidget(notebooks);
+          content.addClass('widgets');
           chatbotWidget = new MainAreaWidget<ChatbotWidget>({ content });
           chatbotWidget.title.label = 'Chatbot';
           chatbotWidget.title.icon = reactIcon;

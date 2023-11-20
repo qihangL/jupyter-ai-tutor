@@ -66,7 +66,6 @@ const ChatbotComponent = ({ notebookTracker }: ChatbotComponentProps): JSX.Eleme
         </button>
       </div>
       <div className={responseBoxClass}>
-        {/* <Markdown>{chatResponse}</Markdown> */}
         <MarkdownRenderer>
           {chatResponse}
         </MarkdownRenderer>

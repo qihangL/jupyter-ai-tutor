@@ -8,7 +8,6 @@
   padding: 20px;
   border-radius: 8px;
   background: #fff;
-
   /* Responsive design: Adjust for smaller screens */
   @media (max-width: 600px) {
     max-width: 100%; /* Chatbot takes full width on smaller screens */
@@ -17,8 +16,8 @@
 }
 .chat-input-container {
   display: flex;
-  align-items: center;
   gap: 10px;
+  align-items: flex-start;
 }
 
 .chatbot-input {
@@ -67,7 +66,6 @@
 
 .chatbot-response:not(.hidden) {
   display: block; /* Show the response box when there is content */
-  /* Other styling that should only apply when the box is visible */
   margin-top: 20px;
   padding: 10px;
   background-color: #f9f9f9;
