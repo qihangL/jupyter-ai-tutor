@@ -22,20 +22,24 @@
 
 .chatbot-input {
   flex-grow: 1;
-  border: 1px solid #ccc;
-  padding: 10px 15px;
-  border-radius: 20px;
-  font-size: 16px;
-  /* Prevent the input from being too narrow on small screens */
-  min-width: 0; 
+  border: 1px solid #d1d5da; /* Subtle border color used by GitHub */
+  padding: 8px 12px; /* Slightly adjusted padding for a balanced look */
+  border-radius: 6px; /* Reduced border-radius for a more GitHub-like appearance */
+  font-size: 16px; /* Standard font size for readability */
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji; /* GitHub-like font stack */
+  color: #24292e; /* GitHub's default text color */
+  background-color: #fafbfc; /* Slightly off-white background, similar to GitHub's input fields */
+  box-shadow: inset 0 1px 2px rgba(27,31,35,0.075); /* Subtle inner shadow for depth, akin to GitHub */
+  min-width: 0; /* Ensuring the input box can shrink as needed */
 }
+
 
 .chatbot-submit {
   padding: 10px 20px;
   border: none;
   background-color: #007bff;
   color: white;
-  border-radius: 20px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
   /* Prevent the button from disappearing on narrow screens */
@@ -49,16 +53,17 @@
   
 .chatbot-response {
   margin-top: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Choose a readable font */
-  font-size: 1rem; /* Adjust the font size */
-  line-height: 1.5; /* Increase line height for better readability */
-  color: #333; /* Ensure good contrast for readability */
-  background-color: #f9f9f9; /* Optional: a light background can sometimes enhance readability */
-  border-radius: 4px; /* Optional: add rounded corners for aesthetic purposes */
-  padding: 10px; /* Add padding for white space */
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Optional: a subtle shadow can help the text "pop" */
-  display: none; 
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji; /* GitHub-like font stack */
+  font-size: 16px; /* Standard readable size, similar to GitHub */
+  line-height: 1.6; /* Slightly increased line height for readability */
+  color: #24292e; /* GitHub's default text color for better contrast */
+  background-color: #ffffff; /* Clean white background, typical of GitHub */
+  border-radius: 6px; /* Slightly larger border-radius for a modern look */
+  padding: 16px; /* Comfortable padding around the text */
+  box-shadow: none; /* Opting for a flat design, similar to GitHub */
+  display: none;
 }
+
 
 .chatbot-response.hidden {
   display: none; /* Explicitly hide when there's no response */
