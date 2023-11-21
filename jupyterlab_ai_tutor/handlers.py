@@ -23,12 +23,14 @@ class CellResponseHandler(APIHandler):
             data = json.loads(self.request.body)
             user_input = data.get("userInput")
             current_cell_json = data.get("currentCellJSON")
+            chat_history = data.get("chatHistory")
 
             # Process the data (replace this with actual logic)
-            response = get_response(current_cell_json, user_input)
+            response, history = get_response(current_cell_json, user_input, chat_history)
             response_data = {
                 "success": True,
-                "response": f"{response}"
+                "response": f"{response}",
+                "history": f"{history}",
             }
         except Exception as e:
             self.set_status(400)

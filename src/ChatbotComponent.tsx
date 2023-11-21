@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ReactWidget } from '@jupyterlab/ui-components';
 import { getCurrentCellJSON } from './utils';
 import { INotebookTracker } from '@jupyterlab/notebook';
@@ -47,21 +47,28 @@ const ChatbotComponent = ({ notebookTracker }: ChatbotComponentProps): JSX.Eleme
   const [chatResponse, setChatResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const chatHistoryRef = useRef(''); // Ref to track the chat history
   const handleSubmit = async () => {
     setIsLoading(true);
     const currentCellJSON = getCurrentCellJSON(notebookTracker);
     const question = userInput.trim() === '' ? "Explain the code and output in this cell." : userInput; 
 
     try {
-      const response = await getChatbotResponse(currentCellJSON, question);
-      setChatResponse(response.success ? response.response || "No response provided" : "Error: " + (response.error || "Unknown error"));
+      const response = await getChatbotResponse(currentCellJSON, question, chatHistoryRef.current);
+      if (response.success) {
+        setChatResponse(response.response || "No response provided");
+        
+        chatHistoryRef.current = response.history || "";
+
+      } else {
+        setChatResponse("Error: " + (response.error || "Unknown error"));
+      }
     } catch (error) {
       setChatResponse("Error sending request: " + (error as Error).message);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="chatbot-container">
       <ChatInput userInput={userInput} setUserInput={setUserInput} handleSubmit={handleSubmit} isLoading={isLoading} />

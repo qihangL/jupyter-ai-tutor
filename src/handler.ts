@@ -41,14 +41,15 @@ export async function requestAPI<T>(endPoint = '', init: RequestInit = {}): Prom
  */
 export async function getChatbotResponse(
   currentCellJSON: any, 
-  userInput: string
-): Promise<{ success: boolean, response?: string, error?: string }> {
+  userInput: string,
+  chatHistory: string,
+): Promise<{ success: boolean, response?: string, error?: string, history?: string}> {
   const settings = ServerConnection.makeSettings();
   const requestUrl = URLExt.join(settings.baseUrl, 'jupyterlab-ai-tutor', 'get-example');
 
   const init: RequestInit = {
     method: 'POST',
-    body: JSON.stringify({ currentCellJSON, userInput }),
+    body: JSON.stringify({ currentCellJSON, userInput, chatHistory }),
     headers: { 'Content-Type': 'application/json' }
   };
 

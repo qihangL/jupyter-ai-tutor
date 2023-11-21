@@ -3,8 +3,8 @@ from langchain.prompts import PromptTemplate
 
 # Client parameters for the ChatOpenAI model
 client_params = {
-    "base_url": "https://apim-aoai-eas-dev02.azure-api.net/cs1302-2023/gpt4-api-96154",
-    "model": "GPT-4",
+    "base_url": "https://apim-aoai-eas-dev02.azure-api.net/cs1302-2023/gpt35-api-94951",
+    "model": "GPT-3.5-Turbo",
     "api_key": "dummy key",
     "temperature": 0,
     "default_headers": {
@@ -51,12 +51,13 @@ AI Tutor:"""
 )
 
 
-def get_response(cell, question, history=None):
+def get_response(cell, question, history):
     response = chat(
         chat_prompt.format_prompt(cell=cell, question=question, history=history).to_messages()
     )
     if history is None:
         history = ""
     history = history + "\nUser: " + question + "\nAI Tutor: " + response.content
-    # return response, history
-    return response.content
+    
+    
+    return response.content, history
