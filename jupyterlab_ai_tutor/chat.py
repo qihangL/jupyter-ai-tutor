@@ -1,9 +1,5 @@
 from langchain.chat_models import ChatOpenAI
-from langchain.prompts.chat import (
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
-)
+from langchain.prompts import PromptTemplate
 
 # Client parameters for the ChatOpenAI model
 client_params = {
@@ -43,17 +39,24 @@ def modify_client_create(new_arg):
 chat = ChatOpenAI(**client_params)
 chat.client.create = modify_client_create("")(chat.client)
 
-# System and human message templates
-system_message_template = "You are an expert in the field of teaching Python to beginners. Your task is to answer user's questions about Python. The user is using JupyterLab. The information of the current cell is {cell}. Your task is to answer the user's question about it. Do not give detailed explanations, just answer the question, unless the user asks for more details."
-human_message_template = "My question is {question}."
+chat_prompt = PromptTemplate.from_template(
+    """
+You are an AI tutor, an expert in the field of teaching Python to beginners. Your task is to answer user's questions about Python.
+The user is using JupyterLab. The information of the current cell is {cell}. Your task is to answer the user's question about it.
+{history}
 
-system_message_prompt = SystemMessagePromptTemplate.from_template(system_message_template)
-human_message_prompt = HumanMessagePromptTemplate.from_template(human_message_template)
+User: {question}
 
-# Combine prompts into a chat prompt template
-chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+AI Tutor:"""
+)
 
 
-def get_response(cell, question):
-    response = chat(chat_prompt.format_prompt(cell=cell, question=question).to_messages())
+def get_response(cell, question, history=None):
+    response = chat(
+        chat_prompt.format_prompt(cell=cell, question=question, history=history).to_messages()
+    )
+    if history is None:
+        history = ""
+    history = history + "\nUser: " + question + "\nAI Tutor: " + response.content
+    # return response, history
     return response.content
