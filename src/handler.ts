@@ -1,72 +1,69 @@
-import { URLExt } from '@jupyterlab/coreutils';
 
+import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 
 /**
- * Call the API extension
+ * Make a request to a specific API endpoint.
  *
- * @param endPoint API REST end point for the extension
- * @param init Initial values for the request
- * @returns The response body interpreted as JSON
+ * @param endPoint - The API endpoint to target.
+ * @param init - Initial settings for the request.
+ * @returns A promise resolving to the response data as JSON.
  */
-export async function requestAPI<T>(
-  endPoint = '',
-  init: RequestInit = {}
-): Promise<T> {
-  // Make request to Jupyter API
+export async function requestAPI<T>(endPoint = '', init: RequestInit = {}): Promise<T> {
   const settings = ServerConnection.makeSettings();
-  const requestUrl = URLExt.join(
-    settings.baseUrl,
-    'jupyterlab-ai-tutor', // API Namespace
-    endPoint
-  );
+  const requestUrl = URLExt.join(settings.baseUrl, 'jupyterlab-ai-tutor', endPoint);
 
-  let response: Response;
   try {
-    response = await ServerConnection.makeRequest(requestUrl, init, settings);
-  } catch (error) {
-    throw new ServerConnection.NetworkError(error as any);
-  }
+    const response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    const data = await response.text();
 
-  let data: any = await response.text();
-
-  if (data.length > 0) {
-    try {
-      data = JSON.parse(data);
-    } catch (error) {
-      console.log('Not a JSON response body.', response);
+    if (!response.ok) {
+      const errorMessage = data ? JSON.parse(data).message : 'Unknown error';
+      throw new ServerConnection.ResponseError(response, errorMessage);
     }
-  }
 
-  if (!response.ok) {
-    throw new ServerConnection.ResponseError(response, data.message || data);
+    return data ? JSON.parse(data) : {};
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error('Network error:', error);
+      throw new ServerConnection.NetworkError(error);
+    }
+    throw error; // Re-throw the error if it's not a network error
   }
-
-  return data;
 }
 
-export async function getChatbotResponse(currentCellJSON: any, userInput: string): Promise<{ success: boolean, response?: string, error?: string }> {
+/**
+ * Get a response from the chatbot API.
+ *
+ * @param currentCellJSON - The current cell's JSON data.
+ * @param userInput - The user's input to the chatbot.
+ * @returns A promise resolving to the chatbot's response.
+ */
+export async function getChatbotResponse(
+  currentCellJSON: any, 
+  userInput: string
+): Promise<{ success: boolean, response?: string, error?: string }> {
   const settings = ServerConnection.makeSettings();
   const requestUrl = URLExt.join(settings.baseUrl, 'jupyterlab-ai-tutor', 'get-example');
 
   const init: RequestInit = {
     method: 'POST',
     body: JSON.stringify({ currentCellJSON, userInput }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: { 'Content-Type': 'application/json' }
   };
 
   try {
-    let response = await ServerConnection.makeRequest(requestUrl, init, settings);
-    let data: any = await response.json();
+    const response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = data.error || 'Unknown error occurred';
+      throw new Error(errorMessage);
+    }
+
     return data;
   } catch (error) {
-    if (error instanceof Error) {
-      throw new ServerConnection.NetworkError(error);  // Now correctly typed as Error
-    } else {
-      // Handle or rethrow the error if it's not an instance of Error
-      throw new ServerConnection.NetworkError(new Error('Unknown error occurred'));
-    }
+    console.error('Error making chatbot request:', error);
+    throw error; // Re-throw the error for further handling
   }
 }

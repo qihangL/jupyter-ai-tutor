@@ -1,82 +1,75 @@
+
 import React, { useState } from 'react';
 import { ReactWidget } from '@jupyterlab/ui-components';
 import { getCurrentCellJSON } from './utils';
 import { INotebookTracker } from '@jupyterlab/notebook';
 import { getChatbotResponse } from './handler';
-
 import { MarkdownRenderer } from './markdown';
-import '../style/index.css'
+import '../style/index.css';
 
 interface ChatbotComponentProps {
   notebookTracker: INotebookTracker;
 }
 
+// Input section component
+const ChatInput = ({ userInput, setUserInput, handleSubmit, isLoading }: {
+  userInput: string,
+  setUserInput: (input: string) => void,
+  handleSubmit: () => void,
+  isLoading: boolean
+}) => (
+  <div className="chat-input-container">
+    <input
+      type="text"
+      value={userInput}
+      onChange={(event) => setUserInput(event.target.value)}
+      placeholder="Explain the code and output in this cell."
+      className="chatbot-input"
+      onKeyDown={(event) => event.key === 'Enter' && handleSubmit()} 
+    />
+    <button onClick={handleSubmit} disabled={isLoading} className="chatbot-submit">
+      {isLoading ? "Thinking" : "Send"}
+    </button>
+  </div>
+);
+
+// Response section component
+const ChatResponse = ({ chatResponse }: { chatResponse: string }) => (
+  <div className={chatResponse ? "chatbot-response" : "chatbot-response hidden"}>
+    <MarkdownRenderer>
+      {chatResponse}
+    </MarkdownRenderer>
+  </div>
+);
+
 const ChatbotComponent = ({ notebookTracker }: ChatbotComponentProps): JSX.Element => {
   const [userInput, setUserInput] = useState('');
   const [chatResponse, setChatResponse] = useState('');
-  const [isLoading, setIsLoading] = useState(false);  // Adding loading state
-  const defaultQuestion = "Explain the code and output in this cell.";  
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInput(event.target.value);
-  };
-
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
-    }
-  };
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    setIsLoading(true); // Set loading state when submitting
-
+    setIsLoading(true);
     const currentCellJSON = getCurrentCellJSON(notebookTracker);
-    const question = userInput.trim() === '' ? defaultQuestion : userInput; 
+    const question = userInput.trim() === '' ? "Explain the code and output in this cell." : userInput; 
 
     try {
       const response = await getChatbotResponse(currentCellJSON, question);
-    
-      if (response.success) {
-        setChatResponse(response.response || "No response provided");  // Provide a default message
-      } else {
-        setChatResponse("Error: " + (response.error || "Unknown error"));  // Provide a default error message
-      }
+      setChatResponse(response.success ? response.response || "No response provided" : "Error: " + (response.error || "Unknown error"));
     } catch (error) {
       setChatResponse("Error sending request: " + (error as Error).message);
     } finally {
-      setIsLoading(false); // Reset loading state regardless of success or failure
+      setIsLoading(false);
     }
   };
 
-  const responseBoxClass = chatResponse ? "chatbot-response" : "chatbot-response hidden";
-
-  
   return (
     <div className="chatbot-container">
-      <div className="chat-input-container">
-        <input
-          type="text"
-          value={userInput}
-          onChange={handleInputChange}
-          placeholder={defaultQuestion}
-          className="chatbot-input"
-          onKeyDown={handleKeyPress} 
-        />
-        <button onClick={handleSubmit} disabled={isLoading} className="chatbot-submit">
-          {isLoading ? "Thinking" : "Send"}
-        </button>
-      </div>
-      <div className={responseBoxClass}>
-        <MarkdownRenderer>
-          {chatResponse}
-        </MarkdownRenderer>
-      </div>
+      <ChatInput userInput={userInput} setUserInput={setUserInput} handleSubmit={handleSubmit} isLoading={isLoading} />
+      <ChatResponse chatResponse={chatResponse} />
     </div>
   );
 };
 
-/**
- * A Chatbot Lumino Widget that wraps a ChatbotComponent.
- */
 export class ChatbotWidget extends ReactWidget {
   constructor(private notebookTracker: INotebookTracker) {
     super();

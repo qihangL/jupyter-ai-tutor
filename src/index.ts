@@ -1,3 +1,4 @@
+
 // src/index.ts
 
 import {
@@ -15,7 +16,7 @@ namespace CommandIDs {
   export const openChatbot = 'open-chatbot-widget';
 }
 
-let chatbotWidget: MainAreaWidget<ChatbotWidget> | null = null;  // Global reference for the chatbot widget
+let chatbotWidget: MainAreaWidget<ChatbotWidget> | null = null;
 
 const extension: JupyterFrontEndPlugin<void> = {
   id: 'react-widget',
@@ -36,19 +37,15 @@ const extension: JupyterFrontEndPlugin<void> = {
           chatbotWidget.title.icon = reactIcon;
         }
     
-        if (!chatbotWidget.isAttached) {
+        // Safe handling of chatbotWidget being possibly null
+        if (chatbotWidget && !chatbotWidget.isAttached) {
           const currentWidget = app.shell.currentWidget;
-          if (currentWidget) {
-            app.shell.add(chatbotWidget, 'main', { mode: 'split-right', ref: currentWidget.id });
-          } else {
-            app.shell.add(chatbotWidget, 'main');
-          }
-        } else {
-          app.shell.activateById(chatbotWidget.id);  // Focus the existing widget
+          app.shell.add(chatbotWidget, 'main', currentWidget ? { mode: 'split-right', ref: currentWidget.id } : undefined);
+        } else if (chatbotWidget) {
+          app.shell.activateById(chatbotWidget.id);
         }
       }
     });
-    
 
     // Add the command to the palette
     palette.addItem({ command, category: 'Chatbot' });
