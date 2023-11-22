@@ -63,7 +63,7 @@ const ChatbotComponent = ({
     const currentCellJSON = getCurrentCellJSON(notebookTracker);
     const question =
       userInput.trim() === ''
-        ? 'Explain the code and output in this cell.'
+        ? 'Explain the code and output of this cell.'
         : userInput;
 
     try {
@@ -72,6 +72,12 @@ const ChatbotComponent = ({
         question,
         chatHistoryRef.current
       );
+
+      // TODO: Keep the chat history on the screen
+      // TODO: Summarize the history instead of appending the whole history
+      // TODO: Add a button to clear the chat history
+      // TODO: ADD latex support
+      
       if (response.success) {
         setChatResponse(response.response || 'No response provided');
 
