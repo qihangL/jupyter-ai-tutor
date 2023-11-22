@@ -1,4 +1,3 @@
-
 import { URLExt } from '@jupyterlab/coreutils';
 import { ServerConnection } from '@jupyterlab/services';
 
@@ -9,12 +8,23 @@ import { ServerConnection } from '@jupyterlab/services';
  * @param init - Initial settings for the request.
  * @returns A promise resolving to the response data as JSON.
  */
-export async function requestAPI<T>(endPoint = '', init: RequestInit = {}): Promise<T> {
+export async function requestAPI<T>(
+  endPoint = '',
+  init: RequestInit = {}
+): Promise<T> {
   const settings = ServerConnection.makeSettings();
-  const requestUrl = URLExt.join(settings.baseUrl, 'jupyterlab-ai-tutor', endPoint);
+  const requestUrl = URLExt.join(
+    settings.baseUrl,
+    'jupyterlab-ai-tutor',
+    endPoint
+  );
 
   try {
-    const response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    const response = await ServerConnection.makeRequest(
+      requestUrl,
+      init,
+      settings
+    );
     const data = await response.text();
 
     if (!response.ok) {
@@ -40,12 +50,21 @@ export async function requestAPI<T>(endPoint = '', init: RequestInit = {}): Prom
  * @returns A promise resolving to the chatbot's response.
  */
 export async function getChatbotResponse(
-  currentCellJSON: any, 
+  currentCellJSON: any,
   userInput: string,
-  chatHistory: string,
-): Promise<{ success: boolean, response?: string, error?: string, history?: string}> {
+  chatHistory: string
+): Promise<{
+  success: boolean;
+  response?: string;
+  error?: string;
+  history?: string;
+}> {
   const settings = ServerConnection.makeSettings();
-  const requestUrl = URLExt.join(settings.baseUrl, 'jupyterlab-ai-tutor', 'get-example');
+  const requestUrl = URLExt.join(
+    settings.baseUrl,
+    'jupyterlab-ai-tutor',
+    'get-example'
+  );
 
   const init: RequestInit = {
     method: 'POST',
@@ -54,7 +73,11 @@ export async function getChatbotResponse(
   };
 
   try {
-    const response = await ServerConnection.makeRequest(requestUrl, init, settings);
+    const response = await ServerConnection.makeRequest(
+      requestUrl,
+      init,
+      settings
+    );
     const data = await response.json();
 
     if (!response.ok) {

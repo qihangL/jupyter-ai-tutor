@@ -1,4 +1,3 @@
-
 // src/index.ts
 
 import {
@@ -7,7 +6,11 @@ import {
   ILayoutRestorer
 } from '@jupyterlab/application';
 import { NotebookPanel, INotebookTracker } from '@jupyterlab/notebook';
-import { MainAreaWidget, ICommandPalette, ToolbarButton } from '@jupyterlab/apputils';
+import {
+  MainAreaWidget,
+  ICommandPalette,
+  ToolbarButton
+} from '@jupyterlab/apputils';
 import { ILauncher } from '@jupyterlab/launcher';
 import { reactIcon } from '@jupyterlab/ui-components';
 import { ChatbotWidget } from './ChatbotComponent';
@@ -24,7 +27,12 @@ const extension: JupyterFrontEndPlugin<void> = {
   autoStart: true,
   requires: [ICommandPalette, INotebookTracker, ILayoutRestorer],
   optional: [ILauncher],
-  activate: (app: JupyterFrontEnd, palette: ICommandPalette, notebooks: INotebookTracker, restorer: ILayoutRestorer) => {
+  activate: (
+    app: JupyterFrontEnd,
+    palette: ICommandPalette,
+    notebooks: INotebookTracker,
+    restorer: ILayoutRestorer
+  ) => {
     const command = CommandIDs.openChatbot;
     app.commands.addCommand(command, {
       label: 'Open Chatbot',
@@ -36,11 +44,17 @@ const extension: JupyterFrontEndPlugin<void> = {
           chatbotWidget.title.label = 'Chatbot';
           chatbotWidget.title.icon = reactIcon;
         }
-    
+
         // Safe handling of chatbotWidget being possibly null
         if (chatbotWidget && !chatbotWidget.isAttached) {
           const currentWidget = app.shell.currentWidget;
-          app.shell.add(chatbotWidget, 'main', currentWidget ? { mode: 'split-right', ref: currentWidget.id } : undefined);
+          app.shell.add(
+            chatbotWidget,
+            'main',
+            currentWidget
+              ? { mode: 'split-right', ref: currentWidget.id }
+              : undefined
+          );
         } else if (chatbotWidget) {
           app.shell.activateById(chatbotWidget.id);
         }

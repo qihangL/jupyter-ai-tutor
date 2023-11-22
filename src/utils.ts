@@ -1,4 +1,3 @@
-
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 
 /**
@@ -12,13 +11,13 @@ export function getCurrentCellJSON(notebookTracker: INotebookTracker): string {
 
   if (!activeNotebook) {
     console.warn('No active notebook found.');
-    return "{}"; // Return an empty JSON object if no notebook is active
+    return '{}'; // Return an empty JSON object if no notebook is active
   }
 
   const activeCell = activeNotebook.content.activeCell;
   if (!activeCell) {
     console.warn('No active cell found in the current notebook.');
-    return "{}"; // Return an empty JSON object if no cell is active
+    return '{}'; // Return an empty JSON object if no cell is active
   }
 
   // Serialize the cell model to JSON
