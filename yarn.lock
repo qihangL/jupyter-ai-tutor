@@ -4372,7 +4372,6 @@ __metadata:
     "@jupyterlab/builder": ^4.0.0
     "@jupyterlab/launcher": 4.0.8
     "@jupyterlab/notebook": ^4.0.0
-    "@jupyterlab/rendermime": ^4.0.9
     "@jupyterlab/settingregistry": ^4.0.0
     "@jupyterlab/ui-components": 4.0.8
     "@types/json-schema": ^7.0.11
